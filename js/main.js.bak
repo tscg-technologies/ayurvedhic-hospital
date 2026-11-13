@@ -1,0 +1,673 @@
+/**
+ * AarogyaVeda Ayurveda Hospital & Holistic Wellness Centre
+ * Core JavaScript Interactions
+ */
+
+document.addEventListener('DOMContentLoaded', () => {
+  'use strict';
+
+  // --------------------------------------------------------------------------
+  // 1. Treatment Data for Modal Popups
+  // --------------------------------------------------------------------------
+  const treatmentsData = {
+    panchakarma: {
+      name: "Panchakarma Detoxification",
+      sanskrit: "पञ्चकर्म चिकित्सा (Panchakarma Chikitsa)",
+      dosha: "Tri-Dosha Balancing (Vata, Pitta, Kapha)",
+      duration: "7 to 21 Days (Personalised Regimen)",
+      image: "assets/images/panchakarma.jpg",
+      description: "Panchakarma is Ayurveda's quintessential fivefold cellular purification science designed to eliminate deeply lodged metabolic waste (Ama) and restore inherent biological equilibrium. Administered strictly under Vaidya supervision following comprehensive preliminary oleation (Snehana) and fomentation (Swedana).",
+      indications: "Chronic digestive imbalances, seasonal metabolic sluggishness, lifestyle rejuvenation, and sustained vital energy restoration.",
+      herbalOils: "Classical medicated decoctions including Dashamoola Kashayam, Dhanwantharam Thailam, and Triphala Ghrita.",
+      procedure: "Conducted through three synchronized phases: Purvakarma (preparatory oil therapies and herbal steam), Pradhanakarma (five targeted cleansing actions), and Paschatkarma (nourishing dietary rehabilitation)."
+    },
+    abhyanga: {
+      name: "Abhyanga Full-Body Therapy",
+      sanskrit: "अभ्यङ्ग स्निग्धता (Abhyanga Snigdhata)",
+      dosha: "Pacifies Vata & Promotes Ojas",
+      duration: "45 - 60 Minutes",
+      image: "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=900&q=80",
+      description: "A synchronized, rhythmic full-body massage performed by two experienced therapists using warm, herb-infused classical oils chosen specifically according to your unique constitutional Prakriti. Gentle yet firm friction stimulates arterial circulation and lymphatic drainage.",
+      indications: "Muscular fatigue, joint stiffness, nervous exhaustion, dry skin tissues, and disrupted sleep rhythms.",
+      herbalOils: "Ksheerabala Thailam, Mahanarayana Thailam, and warm cold-pressed organic black sesame oil.",
+      procedure: "Continuous long flowing strokes following the directions of somatic energy meridians (Nadis) and energy junctions (Marmas), concluding with warm towel compresses."
+    },
+    shirodhara: {
+      name: "Shirodhara Bliss Pouring",
+      sanskrit: "शिरोधरा प्रशमन (Shirodhara Prashamana)",
+      dosha: "Pacifies Prana Vata & Sadhaka Pitta",
+      duration: "45 - 60 Minutes",
+      image: "assets/images/panchakarma.jpg",
+      description: "A deeply tranquil Ayurvedic therapy wherein a continuous, rhythmic stream of warm medicated herbal oil or medicated buttermilk is poured across the forehead (Ajna chakra) from a hanging traditional brass vessel (Kindi / Dhara Patra).",
+      indications: "Mental tension, cognitive fatigue, chronic sleep disturbances, emotional agitation, and sensory overstimulation.",
+      herbalOils: "Brahmi Thailam, Chandanadi Thailam, or medicated Takra (buttermilk) infused with Amalaki.",
+      procedure: "Begins with light head and neck conditioning, followed by continuous warm oil flow across the forehead while relaxing in a silent, soothing therapeutic environment."
+    },
+    swedana: {
+      name: "Swedana Herbal Steam",
+      sanskrit: "स्वेदन वाष्प स्वेद (Swedana Vashpa Sveda)",
+      dosha: "Pacifies Kapha & Relieves Vata Rigidity",
+      duration: "30 - 45 Minutes",
+      image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=900&q=80",
+      description: "An ancient therapeutic sudation process where the body is gently warmed in an aromatic herbal steam cabin infused with medicinal leaves and roots. The head remains cool outside to safeguard delicate sensory faculties.",
+      indications: "Joint tightness, sluggish lymphatic movement, general physical heaviness, and seasonal chill.",
+      herbalOils: "Herbal vapors generated from Nirgundi, Rasna, Tulsi, and Eucalyptus leaves in copper decoction kettles.",
+      procedure: "Typically preceded by light Abhyanga; the individual rests comfortably inside a traditional teakwood steam chamber with regulated warmth."
+    },
+    nasya: {
+      name: "Nasya Nasal Administration",
+      sanskrit: "नस्य कर्म शोधन (Nasya Karma Shodhana)",
+      dosha: "Balances Urdhva Jatrugata (Upper Body) Doshas",
+      duration: "30 - 40 Minutes",
+      image: "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?auto=format&fit=crop&w=900&q=80",
+      description: "Ayurveda recognizes the nasal passages as the gateway to the sensory faculties and cranium. Nasya involves the gentle instillation of purified medicinal herbal oils, herbal ghee, or botanical extracts into each nostril after light facial fomentation.",
+      indications: "Sinus congestion, cervical tension, recurrent headaches, sensory fatigue, and vocal clarity.",
+      herbalOils: "Anu Thailam, Shadbindu Thailam, or medicated Ghritham (clarified herbal butter).",
+      procedure: "Mild facial pressure-point stimulation and warm herbal fomentation precede the carefully measured droplet administration, concluded with medicated herbal gargling."
+    },
+    consultation: {
+      name: "Ayurvedic Prakriti Consultation",
+      sanskrit: "प्रकृति निदान परीक्षा (Prakriti Nidana Pariksha)",
+      dosha: "Comprehensive Tri-Dosha & Dhatu Analysis",
+      duration: "45 - 60 Minutes",
+      image: "assets/images/about-consultation.jpg",
+      description: "A holistic consultation with our experienced Ayurvedic physicians focusing on identifying your baseline natural constitution (Prakriti) and transient doshic imbalances (Vikriti) using classical eightfold diagnostic tools (Ashtavidha Pariksha).",
+      indications: "Anyone seeking personalized nutrition, daily routine guidance (Dinacharya), preventative longevity, or therapeutic treatment design.",
+      herbalOils: "Individualized recommendations of herbal formulations, teas, diet charts, and daily practices.",
+      procedure: "Detailed pulse assessment (Nadi Pariksha), tongue inspection (Jihva), physical observation, and in-depth lifestyle and dietary history dialogue."
+    }
+  };
+
+  // --------------------------------------------------------------------------
+  // 2. Doctor Profile Data
+  // --------------------------------------------------------------------------
+  const doctorsData = {
+    madhavan: {
+      name: "Dr. K. M. Madhavan Warrier",
+      qual: "BAMS, MD (Ayurveda) • Senior Chief Vaidya",
+      spec: "Classical Panchakarma & Constitutional Rejuvenation",
+      experience: "28+ Years of Classical Practice (Fictional Profile)",
+      image: "assets/images/doctor-03.jpg",
+      bio: "Dr. Madhavan Warrier represents a distinguished lineage of traditional Ayurvedic Vaidyas. He specializes in intricate pulse diagnosis (Nadi Pariksha) and guiding long-term restorative Panchakarma retreats for chronic stress, metabolic rehabilitation, and joint wellness.",
+      philosophy: "Ayurveda does not merely treat illness; it awakens the body's innate wisdom to restore its harmonious rhythm with nature."
+    },
+    ananya: {
+      name: "Dr. Ananya Nambiar",
+      qual: "BAMS, MS (Ayurveda) • Senior Physician",
+      spec: "Panchakarma Detoxification & Women's Holistic Health",
+      experience: "16+ Years Clinical Experience (Fictional Profile)",
+      image: "assets/images/doctor-01.jpg",
+      bio: "Dr. Ananya combines classical textual scholarship from Charaka Samhita with compassionate, patient-centered care. She leads customized detoxification regimens and therapeutic postpartum and hormonal balance programs.",
+      philosophy: "When nutrition, seasonal awareness, and therapeutic care align, true vitality flourishes effortlessly."
+    },
+    rajeshwari: {
+      name: "Dr. Rajeshwari Sharma",
+      qual: "BAMS, PGD (Ayur-Nutrition) • Consultant Vaidya",
+      spec: "Kayachikitsa, Gut Health & Ahara (Dietary) Science",
+      experience: "12+ Years Clinical Practice (Fictional Profile)",
+      image: "assets/images/doctor-02.jpg",
+      bio: "Dr. Rajeshwari specializes in gastrointestinal harmony, metabolic vitality, and therapeutic dietetics. She conducts one-on-one lifestyle planning, guiding patients through sustainable dietary adjustments based on their primary dosha.",
+      philosophy: "Food is the first medicine; proper Agni (digestive fire) is the cornerstone of all health."
+    },
+    arvind: {
+      name: "Dr. Arvind Poduval",
+      qual: "BAMS, MD (Shalakya Tantra) • Specialist Vaidya",
+      spec: "Stress Therapeutics, Shirodhara & Sensory Wellness",
+      experience: "14+ Years Clinical Experience (Fictional Profile)",
+      image: "assets/images/doctor-04.jpg",
+      bio: "Dr. Arvind brings focused expertise in sensory care, chronic stress alleviation, and sleep architecture. He is particularly revered for designing deeply restorative Shirodhara and herbal rejuvenation protocols.",
+      philosophy: "A calm mind is the sanctuary wherein the biological forces regain their natural equilibrium."
+    }
+  };
+
+  // --------------------------------------------------------------------------
+  // 3. Header & Sticky Navigation
+  // --------------------------------------------------------------------------
+  const header = document.querySelector('.header');
+  const mobileToggle = document.querySelector('.mobile-nav-toggle');
+  const navMenu = document.querySelector('.nav-menu');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const handleScroll = () => {
+    if (window.scrollY > 40) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+
+    // Scroll spy for active link
+    const sections = document.querySelectorAll('section[id]');
+    const scrollPos = window.scrollY + 120;
+
+    sections.forEach(section => {
+      const top = section.offsetTop;
+      const height = section.offsetHeight;
+      const id = section.getAttribute('id');
+
+      if (scrollPos >= top && scrollPos < top + height) {
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${id}`) {
+            link.classList.add('active');
+          }
+        });
+      }
+    });
+
+    // Back to top button visibility
+    const backToTopBtn = document.getElementById('backToTopBtn');
+    if (backToTopBtn) {
+      if (window.scrollY > 400) {
+        backToTopBtn.classList.add('show');
+      } else {
+        backToTopBtn.classList.remove('show');
+      }
+    }
+  };
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  handleScroll(); // Initial check
+
+  // Mobile menu toggle
+  if (mobileToggle && navMenu) {
+    mobileToggle.addEventListener('click', () => {
+      const isOpen = navMenu.classList.contains('open');
+      if (isOpen) {
+        navMenu.classList.remove('open');
+        mobileToggle.classList.remove('open');
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      } else {
+        navMenu.classList.add('open');
+        mobileToggle.classList.add('open');
+        mobileToggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+    });
+
+    // Close mobile nav on link click
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navMenu.classList.remove('open');
+        mobileToggle.classList.remove('open');
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+  }
+
+  // --------------------------------------------------------------------------
+  // 4. Back to Top Button
+  // --------------------------------------------------------------------------
+  const backToTopBtn = document.getElementById('backToTopBtn');
+  if (backToTopBtn) {
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
+
+  // --------------------------------------------------------------------------
+  // 5. Treatment Learn More Modal
+  // --------------------------------------------------------------------------
+  const treatmentModalOverlay = document.getElementById('treatmentModalOverlay');
+  const treatmentModalClose = document.getElementById('treatmentModalClose');
+  const treatmentButtons = document.querySelectorAll('.js-treatment-more');
+
+  const openTreatmentModal = (treatmentKey) => {
+    const data = treatmentsData[treatmentKey];
+    if (!data || !treatmentModalOverlay) return;
+
+    document.getElementById('modalTreatmentImg').src = data.image;
+    document.getElementById('modalTreatmentImg').alt = data.name;
+    document.getElementById('modalTreatmentTitle').textContent = data.name;
+    document.getElementById('modalTreatmentSanskrit').textContent = data.sanskrit;
+    document.getElementById('modalTreatmentDesc').textContent = data.description;
+    document.getElementById('modalTreatmentDosha').textContent = data.dosha;
+    document.getElementById('modalTreatmentDuration').textContent = data.duration;
+    document.getElementById('modalTreatmentIndications').textContent = data.indications;
+    document.getElementById('modalTreatmentHerbs').textContent = data.herbalOils;
+    document.getElementById('modalTreatmentProcedure').textContent = data.procedure;
+
+    // Direct booking button inside modal
+    const bookThisBtn = document.getElementById('modalBookTreatmentBtn');
+    if (bookThisBtn) {
+      bookThisBtn.onclick = () => {
+        closeTreatmentModal();
+        const selectElem = document.getElementById('bookingTreatment');
+        if (selectElem) {
+          selectElem.value = treatmentKey;
+        }
+        const bookingSection = document.getElementById('appointment');
+        if (bookingSection) {
+          bookingSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      };
+    }
+
+    treatmentModalOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeTreatmentModal = () => {
+    if (treatmentModalOverlay) {
+      treatmentModalOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  };
+
+  treatmentButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const key = btn.getAttribute('data-treatment');
+      openTreatmentModal(key);
+    });
+  });
+
+  if (treatmentModalClose) {
+    treatmentModalClose.addEventListener('click', closeTreatmentModal);
+  }
+
+  if (treatmentModalOverlay) {
+    treatmentModalOverlay.addEventListener('click', (e) => {
+      if (e.target === treatmentModalOverlay) {
+        closeTreatmentModal();
+      }
+    });
+  }
+
+  // --------------------------------------------------------------------------
+  // 6. Panchakarma Interactive Steps Accordion
+  // --------------------------------------------------------------------------
+  const karmaCards = document.querySelectorAll('.karma-card');
+  karmaCards.forEach(card => {
+    card.addEventListener('click', () => {
+      karmaCards.forEach(c => {
+        if (c !== card) c.classList.remove('active');
+      });
+      card.classList.toggle('active');
+    });
+  });
+
+  // --------------------------------------------------------------------------
+  // 7. Doctor Profile Modal
+  // --------------------------------------------------------------------------
+  const doctorModalOverlay = document.getElementById('doctorModalOverlay');
+  const doctorModalClose = document.getElementById('doctorModalClose');
+  const doctorButtons = document.querySelectorAll('.js-doctor-profile');
+
+  const openDoctorModal = (doctorKey) => {
+    const doc = doctorsData[doctorKey];
+    if (!doc || !doctorModalOverlay) return;
+
+    const docImg = document.getElementById('modalDocImg');
+    if (docImg && doc.image) {
+      docImg.src = doc.image;
+      docImg.alt = doc.name;
+      docImg.style.display = 'block';
+    } else if (docImg) {
+      docImg.style.display = 'none';
+    }
+
+    document.getElementById('modalDocName').textContent = doc.name;
+    document.getElementById('modalDocQual').textContent = doc.qual;
+    document.getElementById('modalDocSpec').textContent = doc.spec;
+    document.getElementById('modalDocBio').textContent = doc.bio;
+    document.getElementById('modalDocExp').textContent = doc.experience;
+    document.getElementById('modalDocPhilosophy').textContent = `"${doc.philosophy}"`;
+
+    const bookDoctorBtn = document.getElementById('modalBookDoctorBtn');
+    if (bookDoctorBtn) {
+      bookDoctorBtn.onclick = () => {
+        closeDoctorModal();
+        const docSelect = document.getElementById('bookingDoctor');
+        if (docSelect) {
+          docSelect.value = doctorKey;
+        }
+        const bookingSection = document.getElementById('appointment');
+        if (bookingSection) {
+          bookingSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      };
+    }
+
+    doctorModalOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeDoctorModal = () => {
+    if (doctorModalOverlay) {
+      doctorModalOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  };
+
+  doctorButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const key = btn.getAttribute('data-doctor');
+      openDoctorModal(key);
+    });
+  });
+
+  if (doctorModalClose) {
+    doctorModalClose.addEventListener('click', closeDoctorModal);
+  }
+
+  if (doctorModalOverlay) {
+    doctorModalOverlay.addEventListener('click', (e) => {
+      if (e.target === doctorModalOverlay) {
+        closeDoctorModal();
+      }
+    });
+  }
+
+  // --------------------------------------------------------------------------
+  // 8. Facilities Filter Tabs & Lightbox
+  // --------------------------------------------------------------------------
+  const facilityTabBtns = document.querySelectorAll('.facility-tab-btn');
+  const facilityCards = document.querySelectorAll('.facility-card');
+
+  facilityTabBtns.forEach(tab => {
+    tab.addEventListener('click', () => {
+      facilityTabBtns.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const filterCategory = tab.getAttribute('data-filter');
+
+      facilityCards.forEach(card => {
+        const itemCategory = card.getAttribute('data-category');
+        if (filterCategory === 'all' || itemCategory === filterCategory) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Lightbox for facility images
+  const lightboxOverlay = document.getElementById('lightboxOverlay');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxCaption = document.getElementById('lightboxCaption');
+  const lightboxClose = document.getElementById('lightboxClose');
+
+  facilityCards.forEach(card => {
+    card.addEventListener('click', () => {
+      const img = card.querySelector('img');
+      const title = card.querySelector('h4')?.textContent || '';
+      const desc = card.querySelector('p')?.textContent || '';
+
+      if (img && lightboxOverlay) {
+        lightboxImg.src = img.src;
+        lightboxImg.alt = title;
+        lightboxCaption.innerHTML = `<strong>${title}</strong><br><small>${desc}</small>`;
+        lightboxOverlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    });
+  });
+
+  if (lightboxClose) {
+    lightboxClose.addEventListener('click', () => {
+      lightboxOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  }
+
+  if (lightboxOverlay) {
+    lightboxOverlay.addEventListener('click', (e) => {
+      if (e.target === lightboxOverlay) {
+        lightboxOverlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+
+  // --------------------------------------------------------------------------
+  // 9. Interactive Dosha Self-Assessment Mini-Quiz
+  // --------------------------------------------------------------------------
+  const doshaCards = document.querySelectorAll('.dosha-option-card');
+  const doshaResultBox = document.getElementById('doshaResultBox');
+  const doshaResultTitle = document.getElementById('doshaResultTitle');
+  const doshaResultBody = document.getElementById('doshaResultBody');
+
+  const doshaGuidance = {
+    vata: {
+      title: "Vata Predominant Tendency (Air & Space)",
+      text: "You likely value creativity and agility, but may experience occasional dryness, irregular appetite, or restless sleep when out of balance. Classical Ayurvedic therapies like warm Abhyanga with sesame oil, Shirodhara, and deeply nourishing warm, grounding soups help sustain calm focus."
+    },
+    pitta: {
+      title: "Pitta Predominant Tendency (Fire & Water)",
+      text: "You demonstrate sharp intellect, robust digestion, and natural drive. When elevated, Pitta can manifest as excess bodily heat or irritability. Cooling therapies like Takradhara (medicated buttermilk pour), coconut-infused oils, and sweet-bitter herbal nourishment encourage serenity."
+    },
+    kapha: {
+      title: "Kapha Predominant Tendency (Earth & Water)",
+      text: "You possess steady endurance, natural immunity, and emotional loyalty. When sluggish, Kapha benefits greatly from stimulating therapies such as Swedana (herbal steam), Udwarthanam (dry herbal powder scrub), and warm, spiced herbal decoctions that invigorate metabolic Agni."
+    }
+  };
+
+  doshaCards.forEach(card => {
+    card.addEventListener('click', () => {
+      doshaCards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      const selectedDosha = card.getAttribute('data-dosha');
+
+      if (doshaGuidance[selectedDosha] && doshaResultBox) {
+        doshaResultTitle.textContent = doshaGuidance[selectedDosha].title;
+        doshaResultBody.textContent = doshaGuidance[selectedDosha].text;
+        doshaResultBox.classList.add('show');
+      }
+    });
+  });
+
+  // --------------------------------------------------------------------------
+  // 10. FAQ Accordion
+  // --------------------------------------------------------------------------
+  const faqQuestions = document.querySelectorAll('.faq-question');
+  faqQuestions.forEach(question => {
+    question.addEventListener('click', () => {
+      const item = question.parentElement;
+      const answer = item.querySelector('.faq-answer');
+      const isExpanded = item.classList.contains('active');
+
+      // Close all others
+      document.querySelectorAll('.faq-item').forEach(otherItem => {
+        if (otherItem !== item) {
+          otherItem.classList.remove('active');
+          const otherAns = otherItem.querySelector('.faq-answer');
+          if (otherAns) otherAns.style.maxHeight = null;
+        }
+      });
+
+      if (isExpanded) {
+        item.classList.remove('active');
+        answer.style.maxHeight = null;
+        question.setAttribute('aria-expanded', 'false');
+      } else {
+        item.classList.add('active');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+        question.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  // --------------------------------------------------------------------------
+  // 11. Appointment Booking Form Validation & Demo Modal
+  // --------------------------------------------------------------------------
+  const appointmentForm = document.getElementById('appointmentForm');
+  const successModalOverlay = document.getElementById('successModalOverlay');
+  const successModalClose = document.getElementById('successModalClose');
+  const successModalDismiss = document.getElementById('successModalDismiss');
+  const bookingDateInput = document.getElementById('bookingDate');
+
+  // Set minimum date to today
+  if (bookingDateInput) {
+    const today = new Date().toISOString().split('T')[0];
+    bookingDateInput.setAttribute('min', today);
+  }
+
+  if (appointmentForm) {
+    appointmentForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      let isValid = true;
+
+      // Fields
+      const fullName = document.getElementById('bookingName');
+      const phone = document.getElementById('bookingPhone');
+      const email = document.getElementById('bookingEmail');
+      const date = document.getElementById('bookingDate');
+      const treatment = document.getElementById('bookingTreatment');
+      const doctor = document.getElementById('bookingDoctor');
+      const timeSlot = document.getElementById('bookingTimeSlot');
+      const message = document.getElementById('bookingMessage');
+
+      const validateField = (input, condition) => {
+        if (!condition) {
+          input.classList.add('error');
+          isValid = false;
+        } else {
+          input.classList.remove('error');
+        }
+      };
+
+      // Name check
+      validateField(fullName, fullName.value.trim().length >= 3);
+
+      // Phone check (at least 8 digits)
+      const phoneRegex = /^[0-9+\s\-()]{8,15}$/;
+      validateField(phone, phoneRegex.test(phone.value.trim()));
+
+      // Email check
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      validateField(email, emailRegex.test(email.value.trim()));
+
+      // Date check
+      validateField(date, date.value !== '');
+
+      // Treatment check
+      validateField(treatment, treatment.value !== '');
+
+      if (!isValid) {
+        // Focus first invalid input
+        const firstError = appointmentForm.querySelector('.form-control.error');
+        if (firstError) firstError.focus();
+        return;
+      }
+
+      // Display Demo Success Confirmation Modal
+      const summaryElem = document.getElementById('bookingSummaryDetails');
+      if (summaryElem) {
+        const treatmentText = treatment.options[treatment.selectedIndex].text;
+        const doctorText = doctor.value ? doctor.options[doctor.selectedIndex].text : 'First Available Ayurvedic Vaidya';
+        const timeSlotText = timeSlot.value ? timeSlot.options[timeSlot.selectedIndex].text : 'Morning Slot';
+
+        summaryElem.innerHTML = `
+          <p><strong>Patient Name:</strong> ${escapeHtml(fullName.value)}</p>
+          <p><strong>Contact:</strong> ${escapeHtml(phone.value)} | ${escapeHtml(email.value)}</p>
+          <p><strong>Therapy / Care:</strong> ${escapeHtml(treatmentText)}</p>
+          <p><strong>Consulting Vaidya:</strong> ${escapeHtml(doctorText)}</p>
+          <p><strong>Preferred Schedule:</strong> ${escapeHtml(date.value)} (${escapeHtml(timeSlotText)})</p>
+          ${message.value ? `<p><strong>Health Notes:</strong> <em>${escapeHtml(message.value)}</em></p>` : ''}
+        `;
+      }
+
+      if (successModalOverlay) {
+        successModalOverlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      appointmentForm.reset();
+    });
+
+    // Real-time error removal on input
+    appointmentForm.querySelectorAll('.form-control').forEach(input => {
+      input.addEventListener('input', () => {
+        input.classList.remove('error');
+      });
+    });
+  }
+
+  const closeSuccessModal = () => {
+    if (successModalOverlay) {
+      successModalOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  };
+
+  if (successModalClose) successModalClose.addEventListener('click', closeSuccessModal);
+  if (successModalDismiss) successModalDismiss.addEventListener('click', closeSuccessModal);
+  if (successModalOverlay) {
+    successModalOverlay.addEventListener('click', (e) => {
+      if (e.target === successModalOverlay) closeSuccessModal();
+    });
+  }
+
+  // --------------------------------------------------------------------------
+  // 12. WhatsApp Demo Enquiry Modal
+  // --------------------------------------------------------------------------
+  const whatsappTriggers = document.querySelectorAll('.js-whatsapp-enquiry');
+  const whatsappModalOverlay = document.getElementById('whatsappModalOverlay');
+  const whatsappModalClose = document.getElementById('whatsappModalClose');
+
+  whatsappTriggers.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (whatsappModalOverlay) {
+        whatsappModalOverlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    });
+  });
+
+  if (whatsappModalClose) {
+    whatsappModalClose.addEventListener('click', () => {
+      whatsappModalOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  }
+
+  if (whatsappModalOverlay) {
+    whatsappModalOverlay.addEventListener('click', (e) => {
+      if (e.target === whatsappModalOverlay) {
+        whatsappModalOverlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+
+  // --------------------------------------------------------------------------
+  // 13. Keyboard Accessibility (Escape key closes any open modal)
+  // --------------------------------------------------------------------------
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeTreatmentModal();
+      closeDoctorModal();
+      closeSuccessModal();
+      if (lightboxOverlay) {
+        lightboxOverlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+      if (whatsappModalOverlay) {
+        whatsappModalOverlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+      if (navMenu && navMenu.classList.contains('open')) {
+        navMenu.classList.remove('open');
+        mobileToggle.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    }
+  });
+
+  // Utility to prevent XSS
+  function escapeHtml(string) {
+    const div = document.createElement('div');
+    div.textContent = string;
+    return div.innerHTML;
+  }
+});
+
